@@ -7,6 +7,7 @@ import time
 import copy
 
 
+
 GRID_WIDTH = 20
 GRID_HEIGHT = 20
 CELL_SIZE = 50
@@ -19,22 +20,32 @@ BLACK = (0, 0, 0)
 empty_grid = [[0 for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
 grid = copy.deepcopy(empty_grid)
 
+
+# Handle the user input 
+initial_states = {
+    "b": [(10, 9), (10, 10), (10, 11)]
+}
+
+input_prompt = """
+
+Select an initial input state: 
+    B,b : blinker >"""
+
+initial_state = str(input(input_prompt))
+
+
+for x,y in initial_states[initial_state]:
+    grid[x][y] = 1
+
 # Initialize Pygame and create a window
 pygame.init()
 window = pygame.display.set_mode((GRID_WIDTH * CELL_SIZE, GRID_HEIGHT * CELL_SIZE))
-
-# Initialize the state of the cells in the game grid
-# Blinker
-grid[9][10] = 1
-grid[10][10] = 1
-grid[11][10] = 1
 
 
 def draw_rect(x, y):
     pygame.draw.rect(
         window, BLACK, (x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE)
     )
-
 
 def update_board():
     global grid
@@ -47,7 +58,10 @@ def update_board():
     pygame.display.update()
 
 
+
+
 while True:
+    time.sleep(0.3)
     update_board()
     next_grid = copy.deepcopy(empty_grid)
     for x in range(GRID_WIDTH):
@@ -72,7 +86,11 @@ while True:
             pygame.quit()
             quit()
 
-    # Clear the screen and draw the game grid and cells
-    time.sleep(0.3)
-    update_board()
+    # Check if old grid is equal to new grid 
+    if (grid == next_grid) or (next_grid == empty_grid):
+        print("Exiting")
+        pygame.quit()
+        quit()
     grid = copy.deepcopy(next_grid)
+
+    
